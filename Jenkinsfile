@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    environment {
-        GIT_USERNAME = credentials('github').username
-        GIT_PASSWORD = credentials('github').password
-    }
+   environment {
+    GIT_USERNAME = "${credentials('github').username}"
+    GIT_PASSWORD = "${credentials('github').password}"
+}
 
     stages {
         stage('Clone repository') {
