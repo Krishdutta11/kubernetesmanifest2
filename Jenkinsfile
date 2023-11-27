@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        GIT_USERNAME = credentials('github').username
-        GIT_PASSWORD = credentials('github').password
-    }
-
     stages {
         stage('Clone repository') {
             steps {
@@ -35,7 +30,7 @@ pipeline {
                         // Display content of deployment.yaml after modification
                         sh "cat deployment.yaml"
                         
-                        // Git operations
+                        // Git operations using injected credentials
                         sh "git add ."
                         sh "git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'"
                         sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest.git HEAD:main"
