@@ -1,15 +1,20 @@
 pipeline {
     agent any
 
-   environment {
-    GIT_USERNAME = "${credentials('github').username}"
-    GIT_PASSWORD = "${credentials('github').password}"
-}
+    environment {
+        GIT_USERNAME = credentials('github').username
+        GIT_PASSWORD = credentials('github').password
+    }
 
     stages {
         stage('Clone repository') {
             steps {
-                checkout scm
+                script {
+                    // Use 'withCredentials' to access GitHub credentials for cloning
+                    withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        checkout scm
+                    }
+                }
             }
         }
 
@@ -33,7 +38,7 @@ pipeline {
                         // Git operations
                         sh "git add ."
                         sh "git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'"
-                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest2.git HEAD:main"
+                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest.git HEAD:main"
                     }
                 }
             }
